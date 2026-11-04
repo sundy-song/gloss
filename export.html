@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gloss · 导出</title>
+    <link rel="stylesheet" href="export.css" />
+  </head>
+  <body>
+    <aside class="side">
+      <div class="brand">
+        <span class="logo"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.2" y="7.4" width="17.6" height="3.1" rx="1.55" fill="currentColor"/><rect x="3.2" y="13.4" width="10.9" height="3.1" rx="1.55" fill="currentColor" opacity=".42"/></svg></span>
+        <div>
+          <h1 class="wordmark">gloss<span class="tick">.</span><span class="sub">导出</span></h1>
+          <p id="meta">正在读取页面…</p>
+        </div>
+      </div>
+
+      <section class="group">
+        <label class="row">
+          <span>纸张大小</span>
+          <select id="paper">
+            <option value="A4">A4（210 × 297 mm）</option>
+            <option value="A5">A5（148 × 210 mm）</option>
+            <option value="B5">B5（176 × 250 mm）</option>
+            <option value="Letter">Letter（8.5 × 11 in）</option>
+          </select>
+        </label>
+
+        <label class="row">
+          <span>正文字号</span>
+          <input id="fontSize" type="range" min="12" max="22" step="1" />
+          <output id="fontSizeOut">16px</output>
+        </label>
+
+        <label class="row">
+          <span>页边距</span>
+          <select id="margin">
+            <option value="12">窄（12 mm）</option>
+            <option value="18">标准（18 mm）</option>
+            <option value="24">宽（24 mm）</option>
+            <option value="30">很宽（30 mm）</option>
+          </select>
+        </label>
+
+        <label class="check"><input type="checkbox" id="includeOriginal" checked /><span>保留英文原文</span></label>
+        <label class="check"><input type="checkbox" id="includeNotes" checked /><span>包含页面笔记</span></label>
+      </section>
+
+      <section class="group">
+        <button id="download" class="primary">下载 HTML 文件</button>
+        <button id="print">打印 / 另存为 PDF</button>
+        <button id="markdown">复制 Markdown</button>
+      </section>
+
+      <p class="hint">
+        HTML 是自包含单文件：样式、中英对照、笔记都在里面，发给别人用浏览器打开即可。
+        打印时选「存储为 PDF」，就是按所选纸张排版的 PDF。
+      </p>
+
+      <div class="msg" id="message"></div>
+    </aside>
+
+    <main class="preview-wrap">
+      <div class="paper-label" id="paperLabel">A4 · 210 × 297 mm</div>
+      <div class="preview-frame" id="frameWrap">
+        <iframe id="preview" title="预览"></iframe>
+      </div>
+    </main>
+
+    <script src="lib/report.js"></script>
+    <script src="export.js"></script>
+  </body>
+</html>

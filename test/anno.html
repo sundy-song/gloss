@@ -1,0 +1,109 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>anno</title>
+<link rel="stylesheet" href="../content.css"></head>
+<body>
+<article>
+  <h2>Reading in a second language</h2>
+  <p id="p1">The Mutation Observer API keeps the document in sync, and a bilingual layout keeps the original sentence exactly where your eyes expect it to be.</p>
+  <p id="p2">Automatic documentation translation is useful, but accessibility and asynchronous updates are the parts that actually matter for comprehension.</p>
+</article>
+<script>
+window.__settings = { enabled: true, mode: 'bilingual', lang: 'zh', learn: true, zhScale: 1 };
+window.__changeListeners = [];
+window.chrome = {
+  runtime: {
+    lastError: null,
+    onMessage: { addListener: function () {} },
+    sendMessage: function (msg, cb) {
+      var texts = msg.texts || [];
+      var results = texts.map(function (t, i) { return '译文' + (i + 1) + '：' + String(t).slice(0, 8); });
+      setTimeout(function () { cb({ ok: true, results: results, engine: 'demo', model: 'demo' }); }, 5);
+    }
+  },
+  storage: {
+    local: {
+      get: function (k, cb) {
+        var out = {};
+        out['dsbt:settings'] = window.__settings;
+        if (typeof cb === 'function') setTimeout(function () { cb(out); }, 0);
+        return Promise.resolve(out);
+      },
+      set: function (o) { return Promise.resolve(); }
+    },
+    onChanged: { addListener: function (fn) { window.__changeListeners.push(fn); } }
+  }
+};
+</script>
+<script src="../lib/text.js"></script>
+<script src="../lib/terms.js"></script>
+<script src="../content.js"></script>
+<script src="../annotate.js"></script>
+<script>
+(function () {
+  var out = { steps: [] };
+  var p1 = document.getElementById('p1');
+  var before = p1.textContent;
+
+  function selectIn(el, start, length) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var node = walker.nextNode();
+    var range = document.createRange();
+    range.setStart(node, start);
+    range.setEnd(node, Math.min(start + length, node.nodeValue.length));
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, clientX: 100, clientY: 100 }));
+  }
+
+  function host() {
+    return document.querySelector('[data-dsbt-anno-host]') || document.getElementById('dsbt-anno-host');
+  }
+
+  function shadow() {
+    var h = host();
+    return h && h.shadowRoot ? h.shadowRoot : null;
+  }
+
+  var step = 0;
+  var timer = setInterval(function () {
+    step += 1;
+    if (step === 12) {
+      out.zh = document.querySelectorAll('.dsbt-zh').length;
+      out.chips = document.querySelectorAll('.dsbt-term').length;
+      out.terms = Array.prototype.map.call(document.querySelectorAll('.dsbt-term b'), function (b) { return b.textContent; });
+      selectIn(p1, 4, 22);
+    }
+    if (step === 14) {
+      var sh = shadow();
+      out.toolbarShown = !!(sh && sh.querySelector('.bar.show'));
+      var dot = sh && sh.querySelector('.dot[data-hl="yellow"]');
+      if (dot) dot.click();
+    }
+    if (step === 16) {
+      var hl = window.CSS && CSS.highlights && CSS.highlights.get('dsbt-hl-yellow');
+      out.hlCount = hl ? hl.size : -1;
+      out.domMutated = document.querySelectorAll('[data-dsbt-anno]').length;
+      out.textSame = document.getElementById('p1').textContent === before;
+      selectIn(p1, 5, 9);
+    }
+    if (step === 18) {
+      var sh = shadow();
+      var noteBtn = sh && sh.querySelector('[data-act="note"]');
+      if (noteBtn) noteBtn.click();
+      var ta = sh && sh.querySelector('textarea');
+      if (ta) ta.value = '这里是重点：Mutation Observer 是异步回调。';
+      var save = sh && sh.querySelector('[data-act="save"]');
+      if (save) save.click();
+    }
+    if (step === 20) {
+      out.noteCards = document.querySelectorAll('[data-dsbt-note-card]').length;
+      var card = document.querySelector('[data-dsbt-note-card]');
+      out.noteText = card ? card.querySelector('p').textContent : '';
+      out.textSame2 = document.getElementById('p1').textContent === before;
+      clearInterval(timer);
+      document.documentElement.setAttribute('data-anno', JSON.stringify(out));
+    }
+  }, 150);
+})();
+</script>
+</body></html>

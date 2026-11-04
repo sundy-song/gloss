@@ -1,0 +1,233 @@
+/* content.css — 译文 / 编号 / 词卡 / 批注。
+   视觉：冷灰玻璃 + 蓝色点缀，圆角、细线、轻投影，和弹窗、导出页同一套。 */
+
+.dsbt-zh {
+  display: block !important;
+  margin: 0.35em 0 0.8em !important;
+  padding: 0.1em 0 0.1em 0.72em !important;
+  border-left: 2px solid rgba(96, 100, 112, 0.38) !important;
+  color: inherit !important;
+  background: transparent !important;
+  font-family: inherit !important;
+  font-size: calc(0.96em * var(--dsbt-zh-scale, 1)) !important;
+  line-height: 1.62 !important;
+  text-align: inherit !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  white-space: normal !important;
+  opacity: 0.94;
+  unicode-bidi: isolate;
+  /* 被插进 flex / grid 容器时独占一行，避免和原文并排错位 */
+  flex: 0 0 100%;
+  max-width: 100%;
+  grid-column: 1 / -1;
+}
+
+/* 段落编号：让「第几段原文 ↔ 第几段译文」一眼对上 */
+.dsbt-zh[data-dsbt-n]::before {
+  content: attr(data-dsbt-n);
+  display: inline-block;
+  min-width: 1.5em;
+  margin-right: 0.5em;
+  padding: 0 0.32em;
+  border-radius: 6px;
+  background: rgba(118, 122, 132, 0.14);
+  color: #45474f;
+  font-size: 0.68em;
+  font-weight: 600;
+  line-height: 1.65;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  vertical-align: 0.12em;
+  user-select: none;
+}
+
+.dsbt-zh-inline {
+  display: inline !important;
+  margin-left: 0.28em !important;
+  color: rgba(74, 76, 85, 0.92) !important;
+  background: transparent !important;
+  font-family: inherit !important;
+  font-size: 0.9em !important;
+  font-weight: normal !important;
+  line-height: inherit !important;
+  text-transform: none !important;
+  white-space: normal !important;
+}
+
+.dsbt-zh-inline + .dsbt-zh-inline {
+  margin-left: 0.15em !important;
+}
+
+/* 悬停译文时高亮对应的原文段落 */
+[data-dsbt-hit] {
+  outline: 2px solid rgba(86, 90, 102, 0.45) !important;
+  outline-offset: 2px !important;
+  border-radius: 5px !important;
+  background-color: rgba(86, 90, 102, 0.05) !important;
+  transition: outline-color 0.12s ease, background-color 0.12s ease;
+}
+
+td > .dsbt-zh,
+th > .dsbt-zh,
+li > .dsbt-zh,
+dt > .dsbt-zh,
+dd > .dsbt-zh {
+  margin-bottom: 0.3em !important;
+}
+
+/* ---------------- 学词：术语 / 搭配 ---------------- */
+
+.dsbt-terms {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.38em;
+  margin: -0.3em 0 0.95em 0.72em !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.dsbt-term {
+  display: inline-flex !important;
+  align-items: baseline;
+  gap: 0.4em;
+  padding: 0.14em 0.62em !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  border-radius: 999px !important;
+  background: rgba(118, 122, 132, 0.1) !important;
+  color: #17181c !important;
+  font-size: calc(0.78em * var(--dsbt-zh-scale, 1)) !important;
+  line-height: 1.75 !important;
+  cursor: default;
+  user-select: text;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.dsbt-term b {
+  font-weight: 600 !important;
+  letter-spacing: 0.005em;
+}
+
+.dsbt-term i {
+  font-style: normal !important;
+  color: #7c7f8a !important;
+}
+
+/* ---------------- 批注 ---------------- */
+
+/* 用 CSS Custom Highlight API 上色：只画，不动 DOM，所以不会把页面挤串行 */
+::highlight(dsbt-hl-yellow) {
+  background-color: #ffe9a3;
+}
+
+::highlight(dsbt-hl-green) {
+  background-color: #cdf0d6;
+}
+
+::highlight(dsbt-hl-pink) {
+  background-color: #ffd7de;
+}
+
+::highlight(dsbt-ul) {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: rgba(70, 73, 82, 0.45);
+  text-underline-offset: 2px;
+}
+
+/* 笔记：贴在对应段落下面的一张玻璃卡片 */
+.dsbt-note-card {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 0.55em;
+  margin: 0.45em 0 0.9em !important;
+  padding: 0.55em 0.72em !important;
+  border: 1px solid rgba(24, 26, 35, 0.09) !important;
+  border-left: 3px solid rgba(96, 100, 112, 0.5) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  box-shadow: 0 6px 18px rgba(16, 20, 40, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  color: #3b3d44 !important;
+  font-family: inherit !important;
+  font-size: calc(0.84em * var(--dsbt-zh-scale, 1)) !important;
+  line-height: 1.6 !important;
+}
+
+.dsbt-note-label {
+  flex: none;
+  padding: 0 0.36em;
+  border-radius: 6px;
+  background: rgba(118, 122, 132, 0.16);
+  color: #3f414a;
+  font-size: 0.86em;
+  font-weight: 600;
+  line-height: 1.65;
+}
+
+.dsbt-note-card p {
+  flex: 1 1 auto;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.dsbt-note-del {
+  flex: none;
+  border: 0 !important;
+  background: transparent !important;
+  color: #9a9ca4 !important;
+  font: inherit !important;
+  font-size: 0.9em !important;
+  cursor: pointer;
+  padding: 0 !important;
+}
+
+.dsbt-note-del:hover {
+  color: #ff453a !important;
+}
+
+/* 深色站点上让中文与词卡保持可读 */
+@media (prefers-color-scheme: dark) {
+  .dsbt-zh {
+    border-left-color: rgba(190, 194, 204, 0.5) !important;
+  }
+  .dsbt-zh-inline {
+    color: rgba(186, 190, 200, 0.92) !important;
+  }
+  .dsbt-zh[data-dsbt-n]::before {
+    background: rgba(200, 204, 214, 0.18);
+    color: #e2e5ec;
+  }
+  [data-dsbt-hit] {
+    outline-color: rgba(200, 204, 214, 0.45) !important;
+    background-color: rgba(200, 204, 214, 0.12) !important;
+  }
+  .dsbt-term {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: #e9eaef !important;
+  }
+  .dsbt-term i {
+    color: #9ca0aa !important;
+  }
+  .dsbt-note-card {
+    background: rgba(28, 30, 38, 0.86) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    border-left-color: rgba(200, 204, 214, 0.6) !important;
+    color: #e6e8ee !important;
+  }
+  .dsbt-note-label {
+    background: rgba(200, 204, 214, 0.18);
+    color: #e2e5ec;
+  }
+}
+
+@media print {
+  .dsbt-term,
+  .dsbt-note-del {
+    display: none !important;
+  }
+}

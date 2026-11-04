@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gloss — demo page</title>
+    <style>
+      :root {
+        --bg: #e9ebf1;
+        --card: rgba(255, 255, 255, 0.72);
+        --ink: #17181c;
+        --ink-2: #4d4f57;
+        --ink-3: #8b8d95;
+        --line: rgba(24, 26, 35, 0.1);
+        --accent: #cfd3dd;
+        --accent-deep: #b4b9c6;
+        --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(120% 70% at 50% -10%, #ffffff 0%, rgba(255, 255, 255, 0) 55%),
+          var(--bg);
+        color: var(--ink);
+        font: 16px/1.75 var(--sans);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      ::selection { background: rgba(110, 114, 126, 0.22); }
+
+      a {
+        color: #43454d;
+        text-decoration-color: rgba(67, 69, 77, 0.35);
+        text-underline-offset: 3px;
+      }
+
+      a:hover { color: #17181c; text-decoration-color: rgba(23, 24, 28, 0.6); }
+
+      .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+      .hero {
+        background: linear-gradient(180deg, #f7f8fc 0%, rgba(247, 248, 252, 0) 100%);
+        padding: 58px 0 26px;
+      }
+
+      .kicker {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(118, 122, 132, 0.14);
+        color: #45474f;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        font: 600 44px/1.14 var(--sans);
+        letter-spacing: -0.035em;
+        margin: 16px 0 12px;
+      }
+
+      .sub { margin: 0; color: var(--ink-2); font-size: 17px; line-height: 1.6; }
+
+      .note {
+        margin: 22px 0 0;
+        padding: 14px 16px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.75);
+        border-left: 3px solid rgba(96, 100, 112, 0.5);
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow: 0 1px 2px rgba(16, 20, 40, 0.05), 0 12px 30px rgba(16, 20, 40, 0.07);
+        color: var(--ink-2);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin: 30px 0 8px;
+        padding: 10px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 1px 2px rgba(16, 20, 40, 0.05);
+      }
+
+      .toolbar button,
+      .toolbar a {
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 13px;
+        border-radius: 9px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--ink);
+        font: 500 12.5px/1 var(--sans);
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .toolbar a { border-color: transparent; background: transparent; color: var(--ink-2); }
+
+      .toolbar .primary {
+        border-color: transparent;
+        background: linear-gradient(180deg, #f6f7fa 0%, #dfe2e9 100%);
+        color: var(--ink);
+        border-color: rgba(24, 26, 35, 0.12);
+        box-shadow: 0 1px 2px rgba(16, 20, 40, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      }
+
+      h2 { margin: 40px 0 10px; font: 600 24px/1.3 var(--sans); letter-spacing: -0.025em; }
+      h3 { margin: 24px 0 8px; font: 600 16px/1.4 var(--sans); }
+
+      p { margin: 14px 0; color: var(--ink-2); }
+
+      ul { margin: 12px 0; padding-left: 22px; color: var(--ink-2); }
+      li { margin: 6px 0; }
+
+      table {
+        width: 100%;
+        margin: 18px 0;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 14px;
+        background: var(--card);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(16, 20, 40, 0.05);
+      }
+
+      th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+      th { font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3); }
+      tr:last-child td { border-bottom: 0; }
+
+      pre {
+        background: #101218;
+        color: #e6e8ef;
+        padding: 16px 18px;
+        border-radius: 14px;
+        font: 13px/1.6 var(--mono);
+        overflow: auto;
+        box-shadow: 0 1px 2px rgba(16, 20, 40, 0.1), 0 14px 34px rgba(16, 20, 40, 0.12);
+      }
+
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 18px 0 8px; }
+
+      .card {
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 16px;
+        padding: 16px 18px;
+        background: var(--card);
+        box-shadow: 0 1px 2px rgba(16, 20, 40, 0.05), 0 10px 26px rgba(16, 20, 40, 0.06);
+      }
+
+      .card h3 { margin: 0 0 6px; font-size: 15px; }
+      .card p { margin: 0; font-size: 13.5px; color: var(--ink-3); }
+
+      footer {
+        max-width: 760px;
+        margin: 44px auto 0;
+        padding: 18px 24px 40px;
+        border-top: 1px solid var(--line);
+        color: var(--ink-3);
+        font-size: 12.5px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="wrap">
+        <span class="kicker">gloss · demo</span>
+        <h1>Gloss — read English with Chinese folded in</h1>
+        <p class="sub">A demo page to try the extension, and to see how the bilingual layout behaves.</p>
+        <p class="note">
+          Gloss 默认是关闭的：点工具栏图标，打开右上角开关（或按 <strong>Alt+T</strong>）才会开始翻译。
+          每段英文下方会出现带编号的中文，鼠标移到译文上会高亮对应原文；译文下面还会挑出术语和搭配的词卡。<br />
+          选中任意文字可以 <strong>荧光笔 / 下划线 / 写笔记</strong>；「导出」可按 A4/A5/B5 预览并下载 HTML 或 PDF，
+          「用量」页能看花了多少 token、折合多少钱。
+        </p>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <nav class="toolbar">
+        <button class="primary" type="button">Get started</button>
+        <button type="button">Save changes</button>
+        <button type="button">Export report</button>
+        <a href="#pricing">Pricing</a>
+        <a href="#docs">Documentation</a>
+      </nav>
+
+      <h2>Why bilingual reading works better</h2>
+      <p>
+        Reading technical documentation in a second language is slow but valuable. A bilingual layout
+        keeps the original sentence in place while placing a translation directly underneath, so you
+        can check a term without losing your position in the text.
+      </p>
+      <p>
+        The extension only inserts new elements. It never rewrites the page, which means links,
+        buttons, forms and selection still behave exactly as before.
+      </p>
+
+      <h2>Why terms and collocations matter</h2>
+      <p>
+        A collocation is a pair of words that native speakers habitually use together, such as
+        make a decision or heavy rain. Learning the whole chunk is easier than learning each word
+        alone, because the pattern transfers to new sentences.
+      </p>
+      <p>
+        Technical vocabulary behaves the same way. Once you recognise terms like working memory,
+        accessibility tree or mutation observer, the original English becomes readable without
+        a translation underneath.
+      </p>
+
+      <h2>What gets translated</h2>
+      <ul>
+        <li>Paragraphs, headings, list items and table cells.</li>
+        <li>Short interface labels such as buttons, tabs and menu entries.</li>
+        <li>Content that appears later, for example after scrolling or switching tabs.</li>
+      </ul>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Behaviour</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Display mode</td>
+            <td>Show the translation below each paragraph, or replace the source text.</td>
+            <td>Bilingual</td>
+          </tr>
+          <tr>
+            <td>Translation engine</td>
+            <td>Chrome built-in model, Google endpoint, or your own API key.</td>
+            <td>Automatic</td>
+          </tr>
+          <tr>
+            <td>Code blocks</td>
+            <td>Left untouched on purpose, so snippets stay copyable.</td>
+            <td>Skipped</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Configuration example</h2>
+      <p>Code and configuration are skipped by design. This paragraph should still be translated.</p>
+      <pre><code>{
+  "engine": "custom",
+  "apiBase": "https://api.deepseek.com/v1",
+  "model": "deepseek-chat"
+}</code></pre>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Privacy first</h3>
+          <p>The offline model never sends page text anywhere.</p>
+        </div>
+        <div class="card">
+          <h3>Works with SPAs</h3>
+          <p>New content is picked up by a mutation observer.</p>
+        </div>
+        <div class="card">
+          <h3>One keystroke</h3>
+          <p>Press Alt+T to toggle translation on the current tab.</p>
+        </div>
+      </div>
+
+      <footer>
+        This page is part of the extension package and is not translated on first load until you ask for it.
+      </footer>
+    </div>
+  </body>
+</html>

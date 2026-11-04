@@ -1,0 +1,460 @@
+/* popup.css — Gloss 面板
+   视觉：冷灰玻璃 + 单一蓝点缀，圆角、内高光、柔和投影，贴近 macOS / today.ai 的质感。 */
+
+:root {
+  --bg: #e9ebf1;
+  --bg-grad: radial-gradient(130% 90% at 50% -20%, #ffffff 0%, #f3f4f9 40%, #e6e8ef 100%);
+  --glass: rgba(255, 255, 255, 0.6);
+  --glass-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --line: rgba(24, 26, 35, 0.1);
+  --line-2: rgba(24, 26, 35, 0.16);
+  --ink: #17181c;
+  --ink-2: #5a5c64;
+  --ink-3: #8b8d95;
+  --accent: #cfd3dd;
+  --accent-deep: #b4b9c6;
+  --accent-soft: rgba(120, 124, 136, 0.12);
+  --green: #3f8f5f;
+  --red: #ff453a;
+  --radius: 18px;
+  --shadow: 0 1px 2px rgba(16, 20, 40, 0.05), 0 12px 30px rgba(16, 20, 40, 0.08);
+  --shadow-sm: 0 1px 2px rgba(16, 20, 40, 0.07);
+  --inner: inset 0 0 0 1px rgba(255, 255, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--bg); }
+
+body {
+  width: 384px;
+  margin: 0;
+  padding: 0 0 10px;
+  background: var(--bg-grad);
+  background-attachment: fixed;
+  color: var(--ink);
+  font: 13px/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------- 顶栏 ---------- */
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 16px 11px;
+  background: rgba(244, 245, 249, 0.72);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #cfd3dd 100%);
+  border: 1px solid rgba(24, 26, 35, 0.14);
+  box-shadow: 0 1px 2px rgba(16, 20, 40, 0.1), inset 0 1px 0 #fff;
+  color: #1a1b20;
+}
+
+.mark .glyph { width: 19px; height: 19px; display: block; }
+
+.brand-text { min-width: 0; }
+.wordmark {
+  margin: 0;
+  font: 600 21px/1 var(--sans);
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+.wordmark .tick { color: #a6aab5; }
+
+.tagline {
+  margin: 3px 0 0;
+  color: var(--ink-3);
+  font-size: 10.5px;
+  letter-spacing: 0.01em;
+}
+
+/* iOS 开关 */
+.switch { position: relative; display: inline-flex; flex: none; width: 46px; height: 28px; }
+.switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.slider {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgba(120, 122, 132, 0.26);
+  transition: background 0.22s ease;
+}
+.slider::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(16, 20, 40, 0.22), 0 1px 1px rgba(16, 20, 40, 0.12);
+  transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.switch input:checked + .slider { background: linear-gradient(180deg, #b9bdc8 0%, #a2a7b3 100%); box-shadow: inset 0 1px 2px rgba(16, 20, 40, 0.18); }
+.switch input:checked + .slider::after { transform: translateX(18px); }
+.switch input:focus-visible + .slider { box-shadow: 0 0 0 3px rgba(92, 96, 108, 0.22); }
+
+/* ---------- 状态 ---------- */
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 10px 16px 0;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+.status::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  opacity: 0.75;
+}
+.status.ok { color: var(--ink-2); }
+.status.ok::before { background: var(--green); opacity: 1; }
+.status.err { color: var(--red); }
+.status.err::before { background: var(--red); opacity: 1; }
+
+/* ---------- 分段标签 ---------- */
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin: 12px 16px 0;
+  padding: 3px;
+  border-radius: 11px;
+  background: rgba(120, 122, 132, 0.13);
+}
+
+.tab {
+  border: 0;
+  padding: 6px 4px 7px;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--ink-2);
+  font: 500 12.5px/1.2 var(--sans);
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+.tab:hover { color: var(--ink); }
+.tab.active {
+  background: var(--glass-strong);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- 面板 ---------- */
+
+.panel { padding: 12px 16px 0; }
+.panel.hidden { display: none; }
+
+.lede {
+  margin: 0 0 11px;
+  color: var(--ink-2);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+/* ---------- 卡片 ---------- */
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow), var(--inner);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  padding: 14px;
+}
+
+.settings { display: grid; gap: 11px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.field { display: grid; gap: 5px; }
+.label {
+  color: var(--ink-3);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+input[type="range"] { accent-color: #6f727c; }
+
+select,
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font: 13px/1 var(--sans);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+select {
+  padding-right: 26px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-3) 50%),
+    linear-gradient(135deg, var(--ink-3) 50%, transparent 50%);
+  background-position: calc(100% - 15px) 15px, calc(100% - 10px) 15px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+select:focus,
+input:focus {
+  border-color: rgba(92, 96, 108, 0.55);
+  box-shadow: 0 0 0 3.5px rgba(92, 96, 108, 0.13);
+}
+
+/* iOS 分段控件（显示方式） */
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 9px;
+  background: rgba(120, 122, 132, 0.13);
+}
+.segmented label { display: block; cursor: pointer; }
+.segmented input { position: absolute; opacity: 0; pointer-events: none; }
+.segmented span {
+  display: block;
+  padding: 5px 2px 6px;
+  border-radius: 7px;
+  color: var(--ink-2);
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+.segmented input:checked + span {
+  background: #fff;
+  color: var(--ink);
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- 复选 ---------- */
+
+.checks { display: grid; gap: 8px; }
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  cursor: pointer;
+}
+.check input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: #6f727c;
+  cursor: pointer;
+}
+.learn-check { font-size: 12px; line-height: 1.45; }
+
+/* ---------- 自定义 API ---------- */
+
+.custom {
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.custom.hidden { display: none; }
+
+.hint {
+  margin: 10px 2px 0;
+  color: var(--ink-3);
+  font-size: 11.5px;
+  line-height: 1.6;
+}
+
+/* ---------- 按钮 ---------- */
+
+.actions { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 12px; }
+.actions.secondary { margin-top: 10px; }
+
+button {
+  font: 13px/1 var(--sans);
+  border-radius: 12px;
+  padding: 0 14px;
+  height: 38px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+button:active { transform: scale(0.985); }
+
+.primary {
+  background: linear-gradient(180deg, #f6f7fa 0%, #dfe2e9 100%);
+  color: var(--ink);
+  font-weight: 600;
+  border-color: rgba(24, 26, 35, 0.12);
+  box-shadow: 0 1px 2px rgba(16, 20, 40, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.primary:hover { filter: brightness(1.03); }
+
+.ghost {
+  background: var(--glass-strong);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+.ghost:hover { background: #fff; }
+
+/* ---------- 用量 ---------- */
+
+.usage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.stat {
+  display: grid;
+  gap: 1px;
+  padding: 12px 13px 11px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 15px;
+  box-shadow: var(--shadow), var(--inner);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+}
+.stat .k { color: var(--ink-3); font-size: 11px; letter-spacing: 0.02em; }
+.stat strong {
+  font: 600 25px/1.25 var(--sans);
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.stat em {
+  font-style: normal;
+  color: var(--ink-2);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.usage-list { margin-top: 10px; display: grid; }
+.usage-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.usage-row:last-child { border-bottom: 0; }
+.usage-row .name { color: var(--ink-2); font-family: var(--mono); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.usage-row .num { color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.empty { margin: 10px 0; padding: 14px 0; text-align: center; color: var(--ink-3); font-size: 12px; }
+
+.price-edit { margin-top: 10px; display: grid; gap: 9px; }
+.price-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--ink-3);
+  font-size: 11.5px;
+}
+.price-title span { color: var(--ink-2); font-family: var(--mono); font-size: 11px; }
+.price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ---------- 底部 ---------- */
+
+.message {
+  display: none;
+  margin: 10px 16px 0;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+.message.err { color: var(--red); }
+.message:not(:empty) { display: block; }
+
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 9px 16px 0;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: 11px;
+}
+footer kbd {
+  font: 10.5px/1 var(--mono);
+  padding: 3px 5px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--ink-2);
+  box-shadow: inset 0 -1px 0 rgba(24, 26, 35, 0.06);
+}
+
+/* ---------- 深色 ---------- */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d0e12;
+    --bg-grad: radial-gradient(130% 90% at 50% -20%, #1c1e25 0%, #121319 45%, #0b0c10 100%);
+    --glass: rgba(255, 255, 255, 0.055);
+    --glass-strong: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --line: rgba(255, 255, 255, 0.1);
+    --line-2: rgba(255, 255, 255, 0.16);
+    --ink: #f2f3f7;
+    --ink-2: #a7a9b3;
+    --ink-3: #73757f;
+    --accent: #c3c7d2;
+    --accent-deep: #9ba1ae;
+    --accent-soft: rgba(200, 204, 214, 0.14);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 30px rgba(0, 0, 0, 0.35);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --inner: inset 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  .top { background: rgba(18, 19, 25, 0.7); }
+
+  select, input[type="text"], input[type="password"], input[type="number"] { background: rgba(255, 255, 255, 0.06); color: var(--ink); }
+  .segmented input:checked + span,
+  .tab.active { background: rgba(255, 255, 255, 0.14); color: var(--ink); }
+  footer kbd { background: rgba(255, 255, 255, 0.08); }
+}

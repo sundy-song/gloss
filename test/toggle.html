@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>toggle</title>
+<link rel="stylesheet" href="../content.css"></head>
+<body>
+<h2>Reading in a second language</h2>
+<p id="p1">Reading technical documentation in a second language is slow but valuable, and a bilingual layout keeps the original sentence in place.</p>
+<script>
+window.__changes = [];
+window.chrome = {
+  runtime: {
+    lastError: null,
+    onMessage: { addListener: function () {} },
+    sendMessage: function (msg, cb) {
+      var r = (msg.texts || []).map(function () { return '中文译文'; });
+      setTimeout(function () { cb({ ok: true, results: r, engine: 'demo' }); }, 5);
+    }
+  },
+  storage: {
+    local: {
+      get: function (k, cb) {
+        var o = { 'dsbt:settings': { enabled: false, autoRun: false, mode: 'bilingual', lang: 'zh' } };
+        if (typeof cb === 'function') setTimeout(function () { cb(o); }, 0);
+        return Promise.resolve(o);
+      },
+      set: function () { return Promise.resolve(); }
+    },
+    onChanged: { addListener: function (fn) { window.__changes.push(fn); } }
+  }
+};
+</script>
+<script src="../lib/text.js"></script>
+<script src="../content.js"></script>
+<script>
+function fire(enabled) {
+  window.__changes.forEach(function (fn) {
+    fn({ 'dsbt:settings': { newValue: { enabled: enabled, mode: 'bilingual', lang: 'zh' } } }, 'local');
+  });
+}
+var out = {};
+var step = 0;
+var timer = setInterval(function () {
+  step += 1;
+  var n = document.querySelectorAll('.dsbt-zh').length;
+  if (step === 6) { out.initial = n; fire(true); }
+  if (step === 14) { out.afterOn = document.querySelectorAll('.dsbt-zh').length; fire(false); }
+  if (step === 20) {
+    out.afterOff = document.querySelectorAll('.dsbt-zh').length;
+    clearInterval(timer);
+    document.documentElement.setAttribute('data-toggle', JSON.stringify(out));
+  }
+}, 150);
+</script>
+</body></html>

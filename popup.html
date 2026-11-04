@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>Gloss · 夹译</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <span class="mark" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.2" y="7.4" width="17.6" height="3.1" rx="1.55" fill="currentColor"/><rect x="3.2" y="13.4" width="10.9" height="3.1" rx="1.55" fill="currentColor" opacity=".42"/></svg></span>
+        <div class="brand-text">
+          <h1 class="wordmark">gloss<span class="tick">.</span></h1>
+          <p class="tagline">夹译 · 英文网页双语阅读</p>
+        </div>
+      </div>
+      <label class="switch" title="开启 / 关闭本页翻译">
+        <input type="checkbox" id="enabled" />
+        <span class="slider"></span>
+      </label>
+    </header>
+
+    <p class="status" id="status">正在读取当前页面…</p>
+
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-tab="translate">翻译</button>
+      <button class="tab" data-tab="export">导出</button>
+      <button class="tab" data-tab="usage">用量</button>
+    </nav>
+
+    <!-- 翻译 -->
+    <section class="panel" id="panel-translate">
+      <p class="lede">中文夹在原文下面，逐段对照；顺手挑出几个值得记的词。</p>
+
+      <div class="actions">
+        <button id="scan" class="primary">翻译本页</button>
+        <button id="clear" class="ghost">清除</button>
+      </div>
+
+      <section class="settings card">
+        <div class="row2">
+          <div class="field">
+            <span class="label">显示方式</span>
+            <div class="segmented" id="mode">
+              <label><input type="radio" name="mode" value="bilingual" checked /><span>双语对照</span></label>
+              <label><input type="radio" name="mode" value="replace" /><span>仅中文</span></label>
+            </div>
+          </div>
+
+          <label class="field">
+            <span class="label">目标语言</span>
+            <select id="lang">
+              <option value="zh">简体中文</option>
+              <option value="zh-Hant">繁體中文</option>
+              <option value="ja">日本語</option>
+              <option value="ko">한국어</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+              <option value="ru">Русский</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="check learn-check">
+          <input type="checkbox" id="learn" checked />
+          <span>学词：给每段挑 2–4 个术语 / 搭配，标注在译文下面</span>
+        </label>
+
+        <label class="field">
+          <span class="label">翻译引擎</span>
+          <select id="engine">
+            <option value="auto">自动（推荐）</option>
+            <option value="builtin">Chrome 内置模型（离线）</option>
+            <option value="google">Google 免费接口</option>
+            <option value="custom">自定义 API</option>
+          </select>
+        </label>
+
+        <label class="field range">
+          <span class="label">译文大小</span>
+          <input id="zhScale" type="range" min="0.8" max="1.6" step="0.05" />
+          <output id="zhScaleOut">1.00×</output>
+        </label>
+
+        <div class="custom hidden" id="custom">
+          <label class="field">
+            <span class="label">API 地址</span>
+            <input id="apiBase" type="text" placeholder="https://api.deepseek.com/v1" spellcheck="false" />
+          </label>
+          <label class="field">
+            <span class="label">API Key</span>
+            <input id="apiKey" type="password" placeholder="sk-…" spellcheck="false" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span class="label">模型</span>
+            <input id="model" type="text" placeholder="deepseek-chat" spellcheck="false" />
+          </label>
+          <p class="hint">兼容 OpenAI 格式：DeepSeek、通义千问、Kimi、Ollama 本地模型等。译文会发送到该接口。</p>
+        </div>
+      </section>
+
+      <div class="actions secondary">
+        <button id="test" class="ghost">测试引擎</button>
+        <button id="diag" class="ghost">诊断</button>
+      </div>
+    </section>
+
+    <!-- 导出 -->
+    <section class="panel hidden" id="panel-export">
+      <p class="lede">按真实纸张比例排版，导出成单文件 HTML，或直接打印成 PDF。</p>
+
+      <section class="card">
+        <label class="field">
+          <span class="label">纸张大小</span>
+          <select id="paper">
+            <option value="A4">A4 · 210 × 297 mm</option>
+            <option value="A5">A5 · 148 × 210 mm</option>
+            <option value="B5">B5 · 176 × 250 mm</option>
+            <option value="Letter">Letter · 8.5 × 11 in</option>
+          </select>
+        </label>
+
+        <label class="field range">
+          <span class="label">正文字号</span>
+          <input id="fontSize" type="range" min="12" max="22" step="1" />
+          <output id="fontSizeOut">16px</output>
+        </label>
+
+        <label class="field">
+          <span class="label">页边距</span>
+          <select id="margin">
+            <option value="12">窄 · 12 mm</option>
+            <option value="18">标准 · 18 mm</option>
+            <option value="24">宽 · 24 mm</option>
+            <option value="30">很宽 · 30 mm</option>
+          </select>
+        </label>
+
+        <div class="checks">
+          <label class="check"><input type="checkbox" id="includeOriginal" checked /><span>保留英文原文</span></label>
+          <label class="check"><input type="checkbox" id="includeNotes" checked /><span>包含页面笔记</span></label>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button id="exportOpen" class="primary">预览并导出</button>
+      </div>
+      <p class="hint">导出页里可以实时预览纸张效果，再选择「下载 HTML」或「打印 / 另存为 PDF」。</p>
+    </section>
+
+    <!-- 用量 -->
+    <section class="panel hidden" id="panel-usage">
+      <div class="usage-grid">
+        <div class="stat">
+          <span class="k">今日</span>
+          <strong id="costToday">¥0</strong>
+          <em id="tokToday">0 tokens</em>
+        </div>
+        <div class="stat">
+          <span class="k">累计</span>
+          <strong id="costTotal">¥0</strong>
+          <em id="tokTotal">0 tokens</em>
+        </div>
+      </div>
+
+      <div class="usage-list" id="usageModels"><p class="empty">还没有翻译记录</p></div>
+
+      <section class="card price-edit">
+        <div class="price-title">单价 · 元 / 百万 tokens<span id="priceModel">deepseek-chat</span></div>
+        <div class="price-grid">
+          <label class="field">
+            <span class="label">输入</span>
+            <input id="priceIn" type="number" min="0" step="0.1" />
+          </label>
+          <label class="field">
+            <span class="label">输出</span>
+            <input id="priceOut" type="number" min="0" step="0.1" />
+          </label>
+        </div>
+      </section>
+
+      <div class="actions secondary">
+        <button id="usageRefresh" class="ghost">刷新</button>
+        <button id="usageReset" class="ghost">清零</button>
+      </div>
+      <p class="hint">按上面的单价估算花费；接口没返回 usage 时按字符估算，误差约 ±20%。</p>
+    </section>
+
+    <div class="message" id="message"></div>
+
+    <footer>
+      <span><kbd>Alt</kbd> + <kbd>T</kbd> 开关 · <kbd>Alt</kbd> + <kbd>E</kbd> 导出</span>
+      <span id="version">v1.3.0</span>
+    </footer>
+
+    <script src="lib/pricing.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
